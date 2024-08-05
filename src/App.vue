@@ -1,6 +1,5 @@
 <template>
   <div>
-    <input type="text" v-model="this.innerText">
     <svg 
         ref="svg"
         xmlns="http://www.w3.org/2000/svg"
@@ -11,10 +10,9 @@
         <mask id="Mask">
             <rect :x="this.beigeWidth" y="0" :width="this.blackWidth" height="200" fill="white" />
         </mask>
-        <text x="" y="150" stroke-width="5" class = "text" mask="url(#halfMask)">{{ innerText }}</text>
-        <text x="" y="150" stroke-width="5" class = "text" fill ="black" mask="url(#Mask)">{{ innerText }}</text>
+        <text x="0" y="150" class = "text" mask="url(#halfMask)">{{ this.innerText }}</text>
+        <text x="0" y="150" class = "text" fill ="black" mask="url(#Mask)">{{ this.innerText }}</text>
       </svg>
-      <p>{{ this.textWidth }}</p>
   </div>
 </template>
 
@@ -23,9 +21,9 @@
 export default {
   data(){
     return{
-      blackWidth:50,
-      innerText:'text',
-      textWidth:0
+      blackWidth:0,
+      innerText:'100',
+      textWidth:0,
     }
   },
 
@@ -34,16 +32,27 @@ export default {
       let elem = this.$refs.svg;
       let bbox = elem.getBBox();
       this.textWidth = bbox.width;
+    },
+
+    animation(){
+      const timer = setInterval(() => {
+        this.blackWidth++;
+
+        if(this.blackWidth > 300){
+          clearInterval(timer);
+        }
+      }, 30)
     }
   },
 
   mounted(){
-    this.getElementWidth()
+    this.getElementWidth();
+    this.animation()
   },
 
   computed:{
     beigeWidth(){
-      return this.textWidth - this.blackWidth;
+      return Math.max(0, this.textWidth - this.blackWidth);
     }
   },
 
@@ -57,9 +66,11 @@ export default {
 <style>
   .text{
     font-size:200px;
+    margin: 0;
+    padding: 0;
   }
 
   svg{
-    height: 250px;
+    height: 200px;
   }
 </style>
